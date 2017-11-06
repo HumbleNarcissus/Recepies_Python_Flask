@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="container">
+  <h1>Dashbord <small>{{session.username}}</small></h1>
+  <a class="btn btn-success" href="/add_recepie">Add Recepie</a>
+  <hr>
+  <table class="table table-striped">
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Date</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {% for recepie in recepies %}
+    <tr>
+        <th>{{recepie.id}}</th>
+        <th>{{recepie.title}}</th>
+        <th>{{recepie.author}}</th>
+        <th>{{recepie.create_date}}</th>
+        <th><a href="edit_recepie/{{recepie.id}}" class="btn btn-secondary">Edit</a></th>
+        <th>
+         <form action="{{url_for('delete_recepie', id=recepie.id)}}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" value="Delete" class="btn btn-danger">
+         </form>
+      </th>
+    </tr>
+    {% endfor %}
+  </table>
+  <hr>
+</div>
+{% endblock %}
