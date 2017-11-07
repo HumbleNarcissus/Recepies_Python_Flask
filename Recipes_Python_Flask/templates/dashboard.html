@@ -7,7 +7,6 @@
   <hr>
   <table class="table table-striped">
     <tr>
-        <th>ID</th>
         <th>Title</th>
         <th>Author</th>
         <th>Date</th>
@@ -16,8 +15,7 @@
     </tr>
     {% for recepie in recepies %}
     <tr>
-        <th>{{recepie.id}}</th>
-        <th>{{recepie.title}}</th>
+        <th><a href="recepie/{{recepie.id}}">{{recepie.title}}</a></th>
         <th>{{recepie.author}}</th>
         <th>{{recepie.create_date}}</th>
         <th><a href="edit_recepie/{{recepie.id}}" class="btn btn-secondary">Edit</a></th>

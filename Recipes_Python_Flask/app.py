@@ -115,7 +115,7 @@ def dashboard():
     cursor = mysql.connection.cursor()
 
     #get recepies
-    result = cursor.execute("SELECT * FROM recepies")
+    result = cursor.execute("SELECT * FROM recepies WHERE author = %s", [session['username']])
     recepies = cursor.fetchall()
 
     if result > 0:
@@ -197,6 +197,10 @@ def edit_recepie(id):
     result = cursor.execute("SELECT * FROM recepies WHERE id = %s", [id])
     recepie = cursor.fetchone()
     cursor.close()
+
+    if recepie['author'] != session['username']:
+        flash('Sorry, you cannot edit that recepie', 'danger')
+        return redirect(url_for('dashboard'))
 
     # Get form
     form = RecepieForm(request.form)
