@@ -9,6 +9,9 @@
     <p>{{recepie.ingredients | safe}}</p>
     <h3>Directions</h3>
     <p>{{recepie.directions | safe}}</p>
+    {% if recepie.picture_path != None %}
+        <img src="{{ url_for('static', filename='images/' + recepie.picture_path) }}" height="42" width="42">
+    {% endif %}
   </div>
 
 {% endblock %}

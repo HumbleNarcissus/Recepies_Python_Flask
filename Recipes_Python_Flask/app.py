@@ -1,9 +1,12 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
-from data import Recepies
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
+from flask_wtf.file import FileField, FileRequired
 from passlib.hash import sha256_crypt
 from functools import wraps
+from werkzeug.utils import secure_filename
+import os
+
 
 app = Flask(__name__)
 
@@ -15,6 +18,7 @@ app.config['MYSQL_DB'] = 'users'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 #init MYSQL
 mysql = MySQL(app)
+
 
 @app.route('/')
 def index():
@@ -37,6 +41,7 @@ class RegisterForm(Form):
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)
+
     if request.method == 'POST' and form.validate():
         username = form.username.data
         email = form.email.data
@@ -141,12 +146,27 @@ def add_recepie():
         ingredients = form.ingredients.data
         directions = form.directions.data
 
+        files = request.files['file']
+
+        #file upload to folder
+        target =  'static/images/'
+
+        #check if folder exists
+        if not os.path.isdir(target):
+            os.mkdir(target)
+
+        #check if picture was upload
+
+        filename = secure_filename(files.filename)
+        files.save(os.path.join(target, filename))
+        pic_path = filename
+
         #cursor
         cursor = mysql.connection.cursor()
 
         #execute
-        cursor.execute("INSERT INTO recepies(title, ingredients, directions, author) VALUES(%s, %s, %s, %s)",
-            (title, ingredients, directions, session['username']))
+        cursor.execute("INSERT INTO recepies(title, ingredients, directions, author, picture_path) VALUES(%s, %s, %s, %s, %s)",
+            (title, ingredients, directions, session['username'], pic_path))
 
         #commit to database
         mysql.connection.commit()
@@ -186,7 +206,7 @@ def recepie(id):
 
         return render_template('recepie.html', recepie=recepie)
 
-
+#TODO applay images editing
 @app.route('/edit_recepie/<string:id>', methods=['GET', 'POST'])
 @is_logged_in
 def edit_recepie(id):
