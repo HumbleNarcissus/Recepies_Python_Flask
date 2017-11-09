@@ -83,14 +83,18 @@ def login():
                 session['logged_in'] = True
                 session['username'] = username
 
+                #Close connection
+                cursor.close()
                 flash('You are now logged in', 'success')
                 return redirect(url_for('dashboard'))
             else:
+                #Close connection
+                cursor.close()
                 error = "Invalid Login"
                 return render_template('login.html', error=error)
+        else:
             #Close connection
             cursor.close()
-        else:
             error = "Invalid Login"
             return render_template('login.html', error=error)
 
@@ -230,17 +234,40 @@ def edit_recepie(id):
     form.ingredients.data = recepie['ingredients']
     form.directions.data = recepie['directions']
 
+    #save img to delate after new submit
+    img_to_erase = recepie['picture_path']
+
     if request.method == 'POST' and form.validate():
         title = request.form['title']
         ingredients = request.form['ingredients']
         directions = request.form['directions']
+        files = request.files['file']
+
+        #file upload to folder
+        target =  'static/images/'
+
+        #check if folder exists
+        if not os.path.isdir(target):
+            os.mkdir(target)
+
+        #check if picture was upload
+        filename = secure_filename(files.filename)
+        files.save(os.path.join(target, filename))
+        pic_path = filename
+
+        #delate old img before db commit
+        if img_to_erase != None:
+            try:
+                os.remove(os.path.join(target, img_to_erase))
+            except OSError as err:
+                app.logger.info("CANNOT ERASE OR FIND FILE")
 
         # Create Cursor
         cursor = mysql.connection.cursor()
-        app.logger.info(title)
+
         # Execute
-        cursor.execute ("UPDATE recepies SET title=%s, ingredients=%s, directions=%s WHERE id=%s",
-            (title, ingredients, directions, id))
+        cursor.execute ("UPDATE recepies SET title=%s, ingredients=%s, directions=%s, picture_path=%s WHERE id=%s",
+            (title, ingredients, directions, pic_path, id))
 
         # Commit to DB
         mysql.connection.commit()
