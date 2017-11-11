@@ -22,6 +22,18 @@ mysql = MySQL(app)
 
 @app.route('/')
 def index():
+    cursor = mysql.connection.cursor()
+    #get recepies
+    result = cursor.execute("SELECT * FROM recepies")
+    recepies = cursor.fetchall()
+
+    if result > 0:
+        cursor.close()
+        return render_template('index.html', recepies=recepies)
+    else:
+        cursor.close()
+        return render_template('index.html')
+
     return render_template('index.html')
 
 @app.route('/about')

@@ -4,14 +4,21 @@
   <h1>{{recepie.title}}</h1>
   <small>Written by {{recepie.author}} on {{recepie.create_date}}</small>
   <hr>
-  <div class="container">
-    <h3>Ingredients</h3>
-    <p>{{recepie.ingredients | safe}}</p>
-    <h3>Directions</h3>
-    <p>{{recepie.directions | safe}}</p>
-    {% if recepie.picture_path != None %}
-        <img src="{{ url_for('static', filename='images/' + recepie.picture_path) }}" height="42" width="42">
-    {% endif %}
+  <div class="container clearfix">
+     <div class="float-left">
+         <h3>Ingredients</h3>
+         <p>{{recepie.ingredients | safe}}</p>
+     </div>
+     <div class="img float-right">
+         {% if recepie.picture_path != None %}
+         <img src="{{ url_for('static', filename='images/' + recepie.picture_path) }}" height="321" width="321">
+         {% endif %}
+     </div>
   </div>
+  <div>
+      <h3>Directions</h3>
+      <p>{{recepie.directions | safe}}</p>
+  </div>
+
 
 {% endblock %}

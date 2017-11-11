@@ -9,4 +9,16 @@
         <a href="/login" class="btn btn-success">Login</a>
     {% endif %}
 </div>
+<div class="container">
+    {% for recepie in recepies %}
+        {% if recepie.picture_path != None %}
+        <div class="index">
+            <p>{{recepie.title}}</p>
+            <a href="recepie/{{recepie.id}}">
+                <img src="{{ url_for('static', filename='images/' + recepie.picture_path) }}" height="150" width="150">
+            </a>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
 {% endblock %}
