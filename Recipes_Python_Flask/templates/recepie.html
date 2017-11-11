@@ -12,7 +12,6 @@
     {% if recepie.picture_path != None %}
         <img src="{{ url_for('static', filename='images/' + recepie.picture_path) }}" height="42" width="42">
     {% endif %}
-    {{recepie.picture_path}}
   </div>
 
 {% endblock %}

@@ -140,7 +140,16 @@ class RecepieForm(Form):
     ingredients = TextAreaField('Ingredients', [validators.Length(min=10)])
     directions = TextAreaField('Directions', [validators.Length(min=10)])
 
+#allowed file extendsions
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
+#checking if extendsion is allowed
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+#TODO validate img
 @app.route('/add_recepie', methods=['GET', 'POST'])
 @is_logged_in
 def add_recepie():
@@ -149,21 +158,21 @@ def add_recepie():
         title = form.title.data
         ingredients = form.ingredients.data
         directions = form.directions.data
-
         files = request.files['file']
 
-        #file upload to folder
+        #file upload folder
         target =  'static/images/'
 
         #check if folder exists
         if not os.path.isdir(target):
             os.mkdir(target)
 
-        #check if picture was upload
-
-        filename = secure_filename(files.filename)
-        files.save(os.path.join(target, filename))
-        pic_path = filename
+        pic_path = None
+        #check if picture was upload and extendsion allowed
+        if files.filename != '' and allowed_file(files.filename):
+            filename = secure_filename(files.filename)
+            files.save(os.path.join(target, filename))
+            pic_path = filename
 
         #cursor
         cursor = mysql.connection.cursor()
@@ -178,7 +187,13 @@ def add_recepie():
         #close connection
         cursor.close()
 
-        flash('Recepie Created', 'success')
+        if files.filename == '':
+            flash('Recepie updated without an image', 'success')
+        elif files.filename != '' and not allowed_file(files.filename):
+            flash('Recepie Updated but image extension is not allowed', 'danger')
+        else:
+            flash('Recepie Updated', 'success')
+
         return redirect(url_for('dashboard'))
     return render_template('add_recepie.html', form=form)
 
@@ -210,7 +225,8 @@ def recepie(id):
 
         return render_template('recepie.html', recepie=recepie)
 
-#TODO applay images editing
+
+#TODO validate img
 @app.route('/edit_recepie/<string:id>', methods=['GET', 'POST'])
 @is_logged_in
 def edit_recepie(id):
@@ -250,17 +266,19 @@ def edit_recepie(id):
         if not os.path.isdir(target):
             os.mkdir(target)
 
-        #check if picture was upload
-        filename = secure_filename(files.filename)
-        files.save(os.path.join(target, filename))
-        pic_path = filename
+        pic_path = None
+        #check if picture was upload and extension is allowed
+        if files.filename != '' and allowed_file(files.filename):
+            filename = secure_filename(files.filename)
+            files.save(os.path.join(target, filename))
+            pic_path = filename
 
         #delate old img before db commit
         if img_to_erase != None:
             try:
                 os.remove(os.path.join(target, img_to_erase))
             except OSError as err:
-                app.logger.info("CANNOT ERASE OR FIND FILE")
+                app.logger.info("CANNOT ERASE OR FIND THE FILE")
 
         # Create Cursor
         cursor = mysql.connection.cursor()
@@ -275,7 +293,13 @@ def edit_recepie(id):
         #Close connection
         cursor.close()
 
-        flash('Recepie Updated', 'success')
+        #if user didn't upload image
+        if files.filename == '':
+            flash('Recepie updated without an image', 'success')
+        elif files.filename != '' and not allowed_file(files.filename):
+            flash('Recepie Updated but image extension is not allowed', 'danger')
+        else:
+            flash('Recepie Updated', 'success')
 
         return redirect(url_for('dashboard'))
     return render_template('edit_recepie.html', form=form)
