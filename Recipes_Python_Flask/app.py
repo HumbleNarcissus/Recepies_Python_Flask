@@ -11,10 +11,10 @@ import os
 app = Flask(__name__)
 
 #Database config
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '!1Bartosz1!'
-app.config['MYSQL_DB'] = 'users'
+app.config['MYSQL_HOST'] = 'eu-cdbr-west-01.cleardb.com'
+app.config['MYSQL_USER'] = 'b7f5d06a8743d6'
+app.config['MYSQL_PASSWORD'] = 'b658456f'
+app.config['MYSQL_DB'] = 'heroku_f3f2ab76077d6b8'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 #init MYSQL
 mysql = MySQL(app)
