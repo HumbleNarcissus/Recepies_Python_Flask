@@ -9,6 +9,7 @@ import os
 
 
 app = Flask(__name__)
+app.secret_key = '<!SecreT!/>'
 
 #Database config
 app.config['MYSQL_HOST'] = 'eu-cdbr-west-01.cleardb.com'
@@ -336,5 +337,4 @@ def delete_recepie(id):
     return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
-    app.secret_key = '<!SecreT!/>'
     app.run(debug=True)
