@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="jumbotron text-center">
+  <h2>Welcome to YourRecepies App!</h2>
+  <h5>Site created using python and flask. Enjoy testing!</h5>
+    {% if session.logged_in == NULL %}
+        <a href="/register" class="btn btn-primary">Register</a>
+        <a href="/login" class="btn btn-success">Login</a>
+    {% endif %}
+</div>
+<div class="container">
+    {% for recepie in recepies %}
+        {% if recepie.picture_path != None %}
+        <div class="col">
+                <div class="index">
+                    <a href="recepie/{{recepie.id}}">
+                        <img src="{{('https://s3.eu-west-2.amazonaws.com/yourrecepies/' + recepie.picture_path)}}" height="150" width="150">
+                    </a>
+                <div class="index-text">
+                    <p>{{recepie.title}}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

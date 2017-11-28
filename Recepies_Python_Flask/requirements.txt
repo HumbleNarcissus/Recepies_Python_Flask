@@ -1,0 +1,9 @@
+Flask
+Flask-MySQLdb
+WTForms
+Flask-WTF
+passlib
+Werkzeug
+uwsgi
+boto3
+boto

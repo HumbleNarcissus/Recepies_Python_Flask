@@ -3,7 +3,7 @@
 {% block body %}
 	<h1>Edit Recepie</h1>
 	{% from "includes/_formhelpers.html" import render_field %}
-	<form method="POST" action="">
+	<form method="POST" action="" enctype="multipart/form-data">
 		<div class="form-group">
 			{{render_field(form.title, class="form-control")}}
 		</div>
@@ -12,6 +12,10 @@
 		</div>
 		<div class="form-group">
 			{{render_field(form.directions, class="form-control", id="directions")}}
+		</div>
+		<div class="form-group">
+			<p><b>Image</b></p>
+			<input type=file name=file>
 		</div>
 		<button type="submit" value="submit" class="btn btn-primary">Submit</button>
         <hr>

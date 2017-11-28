@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>{{recepie.title}}</h1>
+  <small>Written by {{recepie.author}} on {{recepie.create_date}}</small>
+  <hr>
+  <div class="container clearfix">
+     <div class="float-left">
+         <h3>Ingredients</h3>
+         <p>{{recepie.ingredients | safe}}</p>
+     </div>
+     <div class="img float-right">
+         {% if recepie.picture_path != None %}
+         <img src="{{('https://s3.eu-west-2.amazonaws.com/yourrecepies/' + recepie.picture_path)}}" height="321" width="321">
+         {% endif %}
+     </div>
+  </div>
+  <div>
+      <h3>Directions</h3>
+      <p>{{recepie.directions | safe}}</p>
+  </div>
+
+
+{% endblock %}
