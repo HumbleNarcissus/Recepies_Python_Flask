@@ -172,6 +172,7 @@ def dashboard():
         msg = 'No Recepies Found'
         return render_template('dashboard.html', msg=msg)
 
+#Rececpie Form
 class RecepieForm(Form):
     title = StringField('Title', [validators.Length(min=3, max=120)])
     ingredients = TextAreaField('Ingredients', [validators.Length(min=10)])
